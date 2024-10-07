@@ -26,6 +26,44 @@ class HomePage extends StatelessWidget {
               fit: BoxFit.cover, // Agar gambar menyesuaikan dengan layar
             ),
           ),
+          // Tombol Back bulat di kiri atas agak ke tengah
+          Positioned(
+            top: 30, // Jarak dari atas layar
+            left: 60, // Jarak dari sisi kiri layar
+            child: ElevatedButton(
+              onPressed: () {
+                // Aksi ketika tombol bulat ditekan
+              },
+              style: ElevatedButton.styleFrom(
+                // backgroundColor: Colors.white, // Warna latar tombol
+                shape: CircleBorder(), // Membuat tombol berbentuk bulat
+                padding: EdgeInsets.all(10), // Ukuran padding untuk membuat tombol bulat
+              ),
+              child: Transform.scale(
+                scale: 1,
+                child: SvgPicture.asset('assets/icons/HRV.svg'),
+              )
+            ),
+          ),
+          // Tombol Back bulat di kiri bawah agak ke tengah
+          Positioned(
+            top: 170, // Jarak dari atas layar
+            left: 60, // Jarak dari sisi kiri layar
+            child: ElevatedButton(
+              onPressed: () {
+                // Aksi ketika tombol bulat ditekan
+              },
+              style: ElevatedButton.styleFrom(
+                // backgroundColor: Colors.white, // Warna latar tombol
+                shape: CircleBorder(), // Membuat tombol berbentuk bulat
+                padding: EdgeInsets.all(10), // Ukuran padding untuk membuat tombol bulat
+              ),
+              child: Transform.scale(
+                scale: 1,
+                child: SvgPicture.asset('assets/icons/QUIZ.svg'),
+              )
+            ),
+          ),
           // Tombol Back di atas background
           Positioned(
             bottom: 80, // Atur jarak tombol dari bawah layar
