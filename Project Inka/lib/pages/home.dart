@@ -52,7 +52,7 @@ class HomePage extends StatelessWidget {
               // Tombol HRV bulat di kiri atas agak ke tengah
               Positioned(
                 top: parentHeight * 0.05, // Jarak dari atas layar
-                left: parentWidth * 0.1, // Jarak dari sisi kiri layar
+                left: parentWidth * 0.05, // Jarak dari sisi kiri layar
                 right: parentWidth * 0.5, // Jarak dari sisi kanan layar
                 // right : parentWidth * 0.7, // Jarak dari sisi kiri layar
                 child: ElevatedButton(
@@ -77,27 +77,26 @@ class HomePage extends StatelessWidget {
                     )),
               ),
               Positioned(
-                top: parentHeight * 0.1, // Jarak dari atas layar
-                right: parentWidth * 0.1, // Jarak dari sisi kanan layar
-                left: parentWidth * 0.53, // Jarak dari sisi kiri layar
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HrvPages()));
-                  },
-                  child: Text(
-                    "CEK HRV",
-                    style: TextStyle(
-                        fontSize: 30,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
-                  ),
-                )
-              ),
+                  top: parentHeight * 0.1, // Jarak dari atas layar
+                  right: parentWidth * 0.1, // Jarak dari sisi kanan layar
+                  left: parentWidth * 0.53, // Jarak dari sisi kiri layar
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => HrvPages()));
+                    },
+                    child: Text(
+                      "CEK HRV",
+                      style: TextStyle(
+                          fontSize: 30,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )),
               // Tombol Back bulat di kiri bawah agak ke tengah
               Positioned(
                 top: parentHeight * 0.29, // Jarak dari atas layar
-                left: parentWidth * 0.1, // Jarak dari sisi kiri layar
+                left: parentWidth * 0.05, // Jarak dari sisi kiri layar
                 right: parentWidth * 0.5, // Jarak dari sisi kanan layar
                 child: ElevatedButton(
                     onPressed: () {
@@ -112,7 +111,8 @@ class HomePage extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       // backgroundColor: Colors.white, // Warna latar tombol
                       shape: CircleBorder(), // Membuat tombol berbentuk bulat
-                      padding: EdgeInsets.all(5), // Ukuran padding untuk membuat tombol bulat
+                      padding: EdgeInsets.all(
+                          5), // Ukuran padding untuk membuat tombol bulat
                     ),
                     child: Transform.scale(
                       scale: 0.9,
@@ -120,9 +120,9 @@ class HomePage extends StatelessWidget {
                     )),
               ),
               Positioned(
-                top: parentHeight * 0.34, // Jarak dari atas layar
-                right: parentWidth * 0.1, // Jarak dari sisi kanan layar
-                left: parentWidth * 0.5, // Jarak dari sisi kiri layar
+                  top: parentHeight * 0.34, // Jarak dari atas layar
+                  right: parentWidth * 0.1, // Jarak dari sisi kanan layar
+                  left: parentWidth * 0.48, // Jarak dari sisi kiri layar
                   child: GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -176,9 +176,7 @@ class HomePage extends StatelessWidget {
               ),
             ],
           );
-        }
-      )
-    );
+        }));
   }
 }
 

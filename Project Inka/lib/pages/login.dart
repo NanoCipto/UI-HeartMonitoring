@@ -6,9 +6,11 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _namaController = TextEditingController();
+    final TextEditingController _divisiController = TextEditingController();
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(94, 169, 246, 1),
+        appBar: AppBar(
+          backgroundColor: const Color.fromRGBO(94, 169, 246, 1),
           leading: Container(
             margin: EdgeInsets.all(10), // Jarak tombol dari tepi
             child: ElevatedButton(
@@ -30,42 +32,141 @@ class LoginPage extends StatelessWidget {
               ),
             ),
           ),
-      ),
-      body: LayoutBuilder(builder: (context, constraints) {
-        //Layout Builder
-        final parentWidth = constraints.maxWidth;
-        final parentHeight = constraints.maxHeight;
-        
-        return Stack(
-          children: [
-            //Background SVG
-            Positioned.fill(
-              child: SvgPicture.asset(
-                'assets/icons/background.svg', 
-                fit: BoxFit.cover,
+        ),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            //Layout Builder
+            final parentWidth = constraints.maxWidth;
+            final parentHeight = constraints.maxHeight;
+
+            return Stack(
+              children: [
+                //Background SVG
+                Positioned.fill(
+                    child: SvgPicture.asset(
+                  'assets/icons/background.svg',
+                  fit: BoxFit.cover,
+                )),
+                //Icon Man
+                Positioned(
+                  top: parentHeight * 0.01,
+                  bottom: parentHeight * 0.6,
+                  left: parentWidth * 0.25,
+                  right: parentWidth * 0.25,
+                  // right: parentWidth * 0.5,
+                  child: Image.asset(
+                    'assets/icons/man.png',
+                    scale: 1,
+                  ),
+                ),
+                //Text
+                Positioned(
+                    top: parentHeight * 0.38, // Jarak dari atas layar
+                    right: parentWidth * 0.1, // Jarak dari sisi kanan layar
+                    left: parentWidth * 0.18, // Jarak dari sisi kiri layar
+                    child: Text(
+                      "STRESS MONITORING",
+                      style: TextStyle(
+                          fontSize: 25,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    )),
+                //Button User
+                Positioned(
+                  top: parentHeight * 0.45,
+                  left: parentWidth * 0.3,
+                  right: parentWidth * 0.3,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Aksi ketika tombol Back ditekan
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange, // Warna latar tombol
+                      foregroundColor: Colors.black, // Warna teks tombol
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 0.5), // Ukuran padding
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            40), // Border persegi dengan sudut melengkung
+                      ),
+                    ),
+                    child: Text(
+                      'USER',
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                  ),
+                ),
+                //Input Nama
+                Positioned(
+                    bottom: parentHeight * 0.35,
+                    left: parentWidth * 0.1,
+                    right: parentWidth * 0.1,
+                    child: Container(
+                        width: 1,
+                        child: TextField(
+                          //Entry Box Nama
+                          controller: _namaController,
+                          decoration: InputDecoration(
+                            labelText: 'Nama',
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                          ),
+                        ))),
+
+                //Input Divisi
+                Positioned(
+                    bottom: parentHeight * 0.25,
+                    left: parentWidth * 0.1,
+                    right: parentWidth * 0.1,
+                    child: Container(
+                        width: 1,
+                        child: TextField(
+                          //Entry Box Nama
+                          controller: _divisiController,
+                          decoration: InputDecoration(
+                            labelText: 'Divisi',
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                          ),
+                        ))),
+                //Button Submit
+                Positioned(
+                  bottom: parentHeight * 0.1,
+                  left: parentWidth * 0.3,
+                  right: parentWidth * 0.3,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Aksi ketika tombol Back ditekan
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green, // Warna latar tombol
+                      foregroundColor: Colors.black, // Warna teks tombol
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 0.5), // Ukuran padding
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            40), // Border persegi dengan sudut melengkung
+                      ),
+                    ),
+                    child: Text(
+                      'SUBMIT',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ),
                 )
-              ),
-            //Icon Man
-            Positioned(
-              top: parentHeight * 0.01,
-              bottom: parentHeight * 0.6,
-              left: parentWidth * 0.25,
-              right: parentWidth * 0.25,
-              // right: parentWidth * 0.5,
-              child: Image.asset(
-                'assets/icons/man.png',
-                scale: 1,
-              ),
-            )
-            //Icon 2
-
-            //Button 1
-
-            //Button 2
-          ],
-        );
-      },
-      )
-    );
+              ],
+            );
+          },
+        ));
   }
 }
