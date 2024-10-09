@@ -9,6 +9,15 @@ class QuesionerPages extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
           backgroundColor: const Color.fromRGBO(94, 169, 246, 1),
+          title: Center(
+            child: Text(
+              'Quesioner',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           leading: Container(
             margin: EdgeInsets.all(10), // Jarak tombol dari tepi
             child: ElevatedButton(
@@ -30,76 +39,26 @@ class QuesionerPages extends StatelessWidget {
               ),
             ),
           ),
+          actions: [Padding(
+            //Logo Quesioner
+            padding: const EdgeInsets.only(right: 8.0),
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: SvgPicture.asset(
+                'assets/icons/QUIZ.svg',
+              ),
+            ),
+          )],
         ),
         
-      body: LayoutBuilder(builder: (context, constraints) {
+      body: Container(
+        color: Color.fromRGBO(94, 169, 246, 1),
+      )
           // Layout Builder
           // final parentWidth = constraints.maxWidth;
-          final parentHeight = constraints.maxHeight;
-          return Stack(
-            children: [
-              // Background SVG yang responsif
-              Positioned.fill(
-                child: SvgPicture.asset(
-                  'assets/icons/background.svg',
-                  fit: BoxFit.cover, // Agar gambar menyesuaikan dengan layar
-                ),
-              ),
-              // Tombol HRV bulat di kiri atas agak ke tengah
-              Positioned(
-                  top: parentHeight * 0.05, // Jarak dari atas layar
-                  left: 0,
-                  right: 0, // Jarak dari sisi kiri layar
-                  child: Center(
-                    child: ElevatedButton(
-                        onPressed: () {
-                          // Aksi ketika tombol bulat ditekan
-                        },
-                        style: ElevatedButton.styleFrom(
-                          // backgroundColor: Colors.white, // Warna latar tombol
-                          shape:
-                              CircleBorder(), // Membuat tombol berbentuk bulat
-                          padding: EdgeInsets.all(
-                              5), // Ukuran padding untuk membuat tombol bulat
-                        ),
-                        child: Transform.scale(
-                          scale: 0.9,
-                          child: SvgPicture.asset('assets/icons/QUIZ.svg'),
-                        )),
-                  )),
-              // Tombol Back
-              Positioned(
-                bottom: 80, // Atur jarak tombol dari bawah layar
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Aksi ketika tombol Mulai ditekan
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white, // Warna latar tombol
-                      foregroundColor: Colors.black, // Warna teks tombol
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 80, vertical: 12), // Ukuran padding
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            8), // Border persegi dengan sudut melengkung
-                      ),
-                    ),
-                    child: Text(
-                      'BACK',
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: const Color.fromARGB(255, 0, 61, 111)),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        }));
+          // final parentHeight = constraints.maxHeight;
+           
+        );
   }
 }

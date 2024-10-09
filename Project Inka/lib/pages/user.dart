@@ -75,8 +75,8 @@ class UserPage extends StatelessWidget {
                 //Button User
                 Positioned(
                   top: parentHeight * 0.45,
-                  left: parentWidth * 0.3,
-                  right: parentWidth * 0.3,
+                  left: parentWidth * 0.38,
+                  right: parentWidth * 0.38,
                   child: ElevatedButton(
                     onPressed: () {
                       // Aksi ketika tombol Back ditekan
@@ -85,7 +85,7 @@ class UserPage extends StatelessWidget {
                       backgroundColor: Colors.orange, // Warna latar tombol
                       foregroundColor: Colors.black, // Warna teks tombol
                       padding: EdgeInsets.symmetric(
-                          horizontal: 50, vertical: 0.5), // Ukuran padding
+                          horizontal: 10, vertical: 0.5), // Ukuran padding
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
                             40), // Border persegi dengan sudut melengkung
@@ -94,7 +94,7 @@ class UserPage extends StatelessWidget {
                     child: Text(
                       'USER',
                       style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 19,
                           fontWeight: FontWeight.bold,
                           color: Colors.black),
                     ),

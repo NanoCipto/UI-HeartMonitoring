@@ -1,4 +1,4 @@
-import 'package:fitness/pages/hrv_pages.dart';
+import 'package:fitness/pages/hrvpages_old.dart';
 import 'package:fitness/pages/user.dart';
 import 'package:fitness/pages/quesioner_pages.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +62,7 @@ class HomePage extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  HrvPages() //Menuju ke Halaman Hrv
+                                  DeviceScanScreen() //Menuju ke Halaman Hrv
                               ));
                     },
                     style: ElevatedButton.styleFrom(
@@ -82,8 +82,10 @@ class HomePage extends StatelessWidget {
                   left: parentWidth * 0.53, // Jarak dari sisi kiri layar
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => HrvPages()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DeviceScanScreen()));
                     },
                     child: Text(
                       "CEK HRV",
@@ -147,12 +149,7 @@ class HomePage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       // Aksi ketika tombol Back ditekan
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  UserPage() //Menuju ke Halaman Hrv
-                              ));
+                      Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white, // Warna latar tombol
