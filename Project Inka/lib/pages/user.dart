@@ -1,8 +1,9 @@
+import 'package:fitness/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class UserPage extends StatelessWidget {
+  const UserPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -144,6 +145,12 @@ class LoginPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       // Aksi ketika tombol Back ditekan
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  HomePage() //Menuju ke Halaman Hrv
+                              ));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green, // Warna latar tombol

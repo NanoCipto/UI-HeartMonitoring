@@ -1,5 +1,5 @@
 import 'package:fitness/pages/hrv_pages.dart';
-import 'package:fitness/pages/login.dart';
+import 'package:fitness/pages/user.dart';
 import 'package:fitness/pages/quesioner_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 // Navigator Pop untuk kembali ke menu sebelumnya
-                // Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xffF7F8F8), // Warna latar tombol
@@ -151,7 +151,7 @@ class HomePage extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  LoginPage() //Menuju ke Halaman Hrv
+                                  UserPage() //Menuju ke Halaman Hrv
                               ));
                     },
                     style: ElevatedButton.styleFrom(
