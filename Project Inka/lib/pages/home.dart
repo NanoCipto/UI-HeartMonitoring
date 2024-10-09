@@ -1,5 +1,4 @@
 import 'package:fitness/pages/hrvpages_old.dart';
-import 'package:fitness/pages/user.dart';
 import 'package:fitness/pages/quesioner_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -124,7 +123,7 @@ class HomePage extends StatelessWidget {
               Positioned(
                   top: parentHeight * 0.34, // Jarak dari atas layar
                   right: parentWidth * 0.1, // Jarak dari sisi kanan layar
-                  left: parentWidth * 0.48, // Jarak dari sisi kiri layar
+                  left: parentWidth * 0.45, // Jarak dari sisi kiri layar
                   child: GestureDetector(
                       onTap: () {
                         Navigator.push(
