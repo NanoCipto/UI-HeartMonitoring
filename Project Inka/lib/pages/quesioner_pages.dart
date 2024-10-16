@@ -48,9 +48,9 @@ class _QuesionerPagesState extends State<QuesionerPages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(94, 169, 246, 1),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(94, 169, 246, 1),
+        backgroundColor: Colors.white,
         title: Center(
           child: Text(
             'Quesioner',

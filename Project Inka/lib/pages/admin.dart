@@ -40,7 +40,7 @@ class _AdminPageState extends State<AdminPage> {
         ),
         backgroundColor: Colors.green,
       ));
-      
+
       // Navigasi
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => ReportPages()));
@@ -65,7 +65,7 @@ class _AdminPageState extends State<AdminPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(94, 169, 246, 1),
+          backgroundColor: Colors.white,
           leading: Container(
             margin: EdgeInsets.all(10), // Jarak tombol dari tepi
             child: ElevatedButton(
@@ -99,24 +99,24 @@ class _AdminPageState extends State<AdminPage> {
                 //Background SVG
                 Positioned.fill(
                     child: SvgPicture.asset(
-                  'assets/icons/background.svg',
+                  'assets/icons/background_3.svg',
                   fit: BoxFit.cover,
                 )),
-                //Icon Man
+                //Icon Engineer
                 Positioned(
                   top: parentHeight * 0.01,
                   bottom: parentHeight * 0.6,
-                  left: parentWidth * 0.25,
-                  right: parentWidth * 0.25,
+                  left: parentWidth * 0.18,
+                  right: parentWidth * 0.18,
                   // right: parentWidth * 0.5,
                   child: Image.asset(
-                    'assets/icons/man.png',
-                    scale: 1,
+                    'assets/icons/engineer.png',
+                    scale: 0.01,
                   ),
                 ),
                 //Text
                 Positioned(
-                    top: parentHeight * 0.38, // Jarak dari atas layar
+                    top: parentHeight * 0.34, // Jarak dari atas layar
                     right: parentWidth * 0.1, // Jarak dari sisi kanan layar
                     left: parentWidth * 0.18, // Jarak dari sisi kiri layar
                     child: Text(
@@ -128,7 +128,7 @@ class _AdminPageState extends State<AdminPage> {
                     )),
                 //Button Admin
                 Positioned(
-                  top: parentHeight * 0.45,
+                  top: parentHeight * 0.54,
                   left: parentWidth * 0.38,
                   right: parentWidth * 0.38,
                   child: ElevatedButton(
@@ -156,7 +156,7 @@ class _AdminPageState extends State<AdminPage> {
                 ),
                 //Input Nama
                 Positioned(
-                    bottom: parentHeight * 0.35,
+                    bottom: parentHeight * 0.265,
                     left: parentWidth * 0.1,
                     right: parentWidth * 0.1,
                     child: Container(
@@ -175,7 +175,7 @@ class _AdminPageState extends State<AdminPage> {
 
                 //Input Divisi
                 Positioned(
-                    bottom: parentHeight * 0.25,
+                    bottom: parentHeight * 0.18,
                     left: parentWidth * 0.1,
                     right: parentWidth * 0.1,
                     child: Container(
@@ -235,7 +235,7 @@ class ReportPages extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(94, 169, 246, 1),
+          backgroundColor: const Color.fromARGB(255, 241, 3, 3),
           leading: Container(
             margin: EdgeInsets.all(10), // Jarak tombol dari tepi
             child: ElevatedButton(
@@ -257,41 +257,49 @@ class ReportPages extends StatelessWidget {
               ),
             ),
           ),
-          title: Center(
-            child: ElevatedButton(
-              onPressed: () {
-                // Aksi ketika tombol Back ditekan
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white, // Warna latar tombol
-                foregroundColor: Colors.black, // Warna teks tombol
-                padding: EdgeInsets.symmetric(
-                    horizontal: 80, vertical: 12), // Ukuran padding
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                      15), // Border persegi dengan sudut melengkung
+        ),
+        body: LayoutBuilder(builder: (context, constraints) {
+          // final parentWidth = constraints.maxWidth;
+          final parentHeight = constraints.maxHeight;
+
+          return Stack(
+            children: [
+              // Background SVG yang responsif
+              Positioned.fill(
+                child: SvgPicture.asset(
+                  'assets/icons/background_4.svg',
+                  fit: BoxFit.cover, // Agar gambar menyesuaikan dengan layar
                 ),
               ),
-              child: Text(
-                'DATA HASIL',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 0, 0, 0)),
+              Positioned(
+                top: parentHeight * 0.03,
+                right: parentHeight * 0.09,
+                left: parentHeight * 0.09,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Aksi ketika tombol Back ditekan
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white, // Warna latar tombol
+                    foregroundColor: Colors.black, // Warna teks tombol
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 12), // Ukuran padding
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          15), // Border persegi dengan sudut melengkung
+                    ),
+                  ),
+                  child: Text(
+                    'DATA HASIL',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: const Color.fromARGB(255, 0, 0, 0)),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-        body: Stack(
-          children: [
-            // Background SVG yang responsif
-            Positioned.fill(
-              child: SvgPicture.asset(
-                'assets/icons/background.svg',
-                fit: BoxFit.cover, // Agar gambar menyesuaikan dengan layar
-              ),
-            ),
-          ],
-        ));
+            ],
+          );
+        }));
   }
 }

@@ -12,16 +12,18 @@ class MainMenu extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
-          actions: [Padding(
-            //Logo INKA
-            padding: const EdgeInsets.only(right: 8.0),
-            child: SizedBox(
-              width: 120,
-              height: 120,
-              child: Image.asset(
-              'assets/icons/INKA.png',),
-            ) 
-          )],
+          actions: [
+            Padding(
+                //Logo INKA
+                padding: const EdgeInsets.only(right: 8.0),
+                child: SizedBox(
+                  width: 120,
+                  height: 120,
+                  child: Image.asset(
+                    'assets/icons/INKA.png',
+                  ),
+                ))
+          ],
         ),
         body: LayoutBuilder(
           builder: (context, constraints) {
@@ -41,17 +43,17 @@ class MainMenu extends StatelessWidget {
                 Positioned(
                   top: parentHeight * 0.01,
                   bottom: parentHeight * 0.6,
-                  left: parentWidth * 0.25,
-                  right: parentWidth * 0.25,
+                  left: parentWidth * 0.18,
+                  right: parentWidth * 0.18,
                   // right: parentWidth * 0.5,
                   child: Image.asset(
-                    'assets/icons/Engineer.png',
-                    scale: 1,
+                    'assets/icons/engineer.png',
+                    scale: 0.01,
                   ),
                 ),
                 //Text
                 Positioned(
-                    top: parentHeight * 0.38, // Jarak dari atas layar
+                    top: parentHeight * 0.34, // Jarak dari atas layar
                     right: parentWidth * 0.1, // Jarak dari sisi kanan layar
                     left: parentWidth * 0.18, // Jarak dari sisi kiri layar
                     child: Text(

@@ -10,7 +10,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(94, 169, 246, 1),
+          backgroundColor: Colors.white,
           leading: Container(
             margin: EdgeInsets.all(10), // Jarak tombol dari tepi
             child: ElevatedButton(
@@ -43,7 +43,7 @@ class HomePage extends StatelessWidget {
               // Background SVG yang responsif
               Positioned.fill(
                 child: SvgPicture.asset(
-                  'assets/icons/background.svg',
+                  'assets/icons/background_3.svg',
                   fit: BoxFit.cover, // Agar gambar menyesuaikan dengan layar
                 ),
               ),
@@ -90,7 +90,7 @@ class HomePage extends StatelessWidget {
                       "CEK HRV",
                       style: TextStyle(
                           fontSize: 30,
-                          color: Colors.white,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold),
                     ),
                   )),
@@ -135,7 +135,7 @@ class HomePage extends StatelessWidget {
                         "QUESIONER",
                         style: TextStyle(
                           fontSize: 30,
-                          color: Colors.white,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ))),

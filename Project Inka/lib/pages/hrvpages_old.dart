@@ -1,8 +1,29 @@
+// import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:excel/excel.dart';
 import 'dart:math';
 import 'dart:async';
+// import 'package:path_provider/path_provider.dart';
+// import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:intl/intl.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: DeviceScanScreen(),
+    );
+  }
+}
 
 class DeviceScanScreen extends StatefulWidget {
   @override
@@ -34,50 +55,9 @@ class _DeviceScanScreenState extends State<DeviceScanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(94, 169, 246, 1),
-        title: Center(
-          child: Text(
-          'Select Heart Rate Device',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold
-          ),
-        )),
-        leading: Container(
-          margin: EdgeInsets.all(10), // Jarak tombol dari tepi
-          child: ElevatedButton(
-            onPressed: () {
-              // Navigator Pop untuk kembali ke menu sebelumnya
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xffF7F8F8), // Warna latar tombol
-              padding: EdgeInsets.all(10), // Padding di dalam tombol
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10), // Bentuk sudut bulat
-              ),
-            ),
-            child: SvgPicture.asset(
-              'assets/icons/Arrow - Left 2.svg', // Gambar ikon panah kiri
-              width: 24, // Lebar ikon
-              height: 24, // Tinggi ikon
-            ),
-          ),
-        ),
-        actions: [Padding(
-            //Logo HRV
-            padding: const EdgeInsets.only(right: 8.0),
-            child: SizedBox(
-              width: 40,
-              height: 40,
-              child: SvgPicture.asset(
-              'assets/icons/HRV.svg',),
-            ) 
-          )],
+        title: Text('Select Heart Rate Device'),
       ),
-      body: Container(
-        color: const Color.fromRGBO(94, 169, 246, 1),
-        child: ListView.builder(
+      body: ListView.builder(
         itemCount: scanResults.length,
         itemBuilder: (context, index) {
           final result = scanResults[index];
@@ -95,7 +75,6 @@ class _DeviceScanScreenState extends State<DeviceScanScreen> {
             },
           );
         },
-      ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.refresh),
@@ -115,10 +94,14 @@ class HeartRateMonitor extends StatefulWidget {
 }
 
 class _HeartRateMonitorState extends State<HeartRateMonitor> {
+  double stressIndex = 0.0;
+  double amo = 0.0;
+  double modus = 0.0;
+  double MxDMn = 0.0;
   List<BluetoothService> services = [];
   bool isConnected = false;
   int heartRate = 0;
-  List<int> rrIntervals = []; // Post ke Firebase
+  List<int> rrIntervals = [];
   double totalRrInterval = 0.0;
   int rrIntervalCount = 0;
   double sdnn = 0.0;
@@ -127,12 +110,16 @@ class _HeartRateMonitorState extends State<HeartRateMonitor> {
   double averageRrInterval = 0.0;
   Timer? timer;
   int countdown = 60;
-  List<int> bpmList = []; // Post ke Firebase
+  List<int> bpmList = [];
   double averageBpm = 0.0;
   double averageSdnn = 0.0;
   double averageRmssd = 0.0;
   double averagePnn50 = 0.0;
   double averagerr = 0.0;
+  List<int> bpmwaktu = [];
+  List<int> rrintervalwaktu = [];
+  bool isdone = false;
+
   BluetoothCharacteristic? hrCharacteristic;
 
   @override
@@ -201,6 +188,45 @@ class _HeartRateMonitorState extends State<HeartRateMonitor> {
     });
   }
 
+  Future<void> requestStoragePermission() async {
+    var status = await Permission.manageExternalStorage.status;
+    if (!status.isGranted) {
+      await Permission.manageExternalStorage.request();
+    } else if (status.isDenied) {
+      // Izin ditolak, tampilkan dialog untuk meminta izin
+      await Permission.manageExternalStorage.request();
+    } else if (status.isPermanentlyDenied) {
+      // Izin ditolak secara permanen, arahkan pengguna ke pengaturan
+      await openAppSettings();
+    }
+  }
+
+  void generateExcel() async {
+    DateTime waktuaktual = DateTime.now();
+    String url =
+        "https://heartratemonitoring-c0e5d-default-rtdb.firebaseio.com/data/${DateFormat('yyyy-MM-dd').format(waktuaktual)}/${DateFormat('HH-mm-ss').format(waktuaktual)}.json";
+    Map<String, String> data = {
+      "BPM List": bpmwaktu.toString(),
+      "Amo": amo.toString(),
+      "Modus": modus.toString(),
+      "RRInterval": rrintervalwaktu.toString(),
+      'MxDMn': MxDMn.toString(),
+      "StresIndex": stressIndex.toString()
+    };
+    final response = await http.patch(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(data),
+    );
+    if (response.statusCode == 200) {
+      print('Data uploaded successfully');
+    } else {
+      print('Failed to upload data. Status code: ${response.statusCode}');
+    }
+  }
+
   void calculateMetrics() {
     if (rrIntervals.isEmpty) {
       return;
@@ -251,26 +277,58 @@ class _HeartRateMonitorState extends State<HeartRateMonitor> {
   void calculateAverages() {
     if (bpmList.isNotEmpty) {
       averageBpm = bpmList.reduce((a, b) => a + b).toDouble() / bpmList.length;
+      bpmwaktu = bpmList;
     }
     if (rrIntervals.isNotEmpty) {
+      rrintervalwaktu = rrIntervals;
       averageSdnn = sdnn;
       averageRmssd = rmssd;
       averagePnn50 = pnn50;
       averageRrInterval = totalRrInterval / rrIntervalCount;
       averagerr = totalRrInterval / rrIntervalCount;
-    }
 
-    setState(() {
-      averageBpm = averageBpm;
-      averageSdnn = averageSdnn;
-      averageRmssd = averageRmssd;
-      averagePnn50 = averagePnn50;
-      averageRrInterval = averageRrInterval;
-      averagerr = averagerr;
-      // averageRrInterval = rrIntervals.isNotEmpty
-      //     ? rrIntervals.reduce((a, b) => a + b).toDouble() / rrIntervals.length
-      //     : 0.0;
-    });
+      // Hitung Stress Index (SI)
+      var modeMap = <int, int>{};
+      rrIntervals.forEach((interval) {
+        modeMap[interval] = (modeMap[interval] ?? 0) + 1;
+      });
+
+      // Menghitung modus
+      modus = modeMap.entries
+          .reduce((a, b) => a.value > b.value ? a : b)
+          .key
+          .toDouble();
+
+      // Menghitung AMo
+      var AMo = modeMap[modus.toInt()]!.toDouble() / rrIntervalCount.toDouble();
+
+      // Menghitung MxDMn
+      var maxRr = rrIntervals.reduce((a, b) => a > b ? a : b).toDouble();
+      var minRr = rrIntervals.reduce((a, b) => a < b ? a : b).toDouble();
+      var MxDMn = maxRr - minRr;
+
+      // Menghitung Stress Index
+      var stressIndex = (AMo * 100) / (2 * (modus / 1000) * (MxDMn / 1000));
+
+      setState(() {
+        averageBpm = averageBpm;
+        averageSdnn = averageSdnn;
+        averageRmssd = averageRmssd;
+        averagePnn50 = averagePnn50;
+        averageRrInterval = averageRrInterval;
+        averagerr = averagerr;
+        this.stressIndex = stressIndex;
+        amo = AMo;
+        this.modus = modus;
+        this.MxDMn = MxDMn;
+        isdone = true;
+        bpmwaktu;
+        rrintervalwaktu;
+        this.bpmwaktu = bpmwaktu;
+
+        this.rrintervalwaktu = rrintervalwaktu;
+      });
+    }
   }
 
   @override
@@ -379,6 +437,25 @@ class _HeartRateMonitorState extends State<HeartRateMonitor> {
                     style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 20),
+                  SizedBox(height: 20),
+                  Text(
+                    'Stress Index (SI):',
+                    style: TextStyle(fontSize: 24),
+                  ),
+                  Text(
+                    '${stressIndex.toStringAsFixed(2)}',
+                    style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                  ),
+                  isdone
+                      ? ElevatedButton(
+                          onPressed: () async {
+                            // await requestStoragePermission();
+                            generateExcel();
+                          },
+                          child: Text('Save ke Database'),
+                        )
+                      : Text(''),
+
                   // Display services and characteristics
                   Column(
                     children: services.map((service) {

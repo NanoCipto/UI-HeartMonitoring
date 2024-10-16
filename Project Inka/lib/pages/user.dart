@@ -14,7 +14,7 @@ class UserPage extends StatelessWidget {
     final TextEditingController _divisiController = TextEditingController();
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(94, 169, 246, 1),
+          backgroundColor: Colors.white,
           leading: Container(
             margin: EdgeInsets.all(10), // Jarak tombol dari tepi
             child: ElevatedButton(
@@ -48,24 +48,24 @@ class UserPage extends StatelessWidget {
                 //Background SVG
                 Positioned.fill(
                     child: SvgPicture.asset(
-                  'assets/icons/background.svg',
+                  'assets/icons/background_3.svg',
                   fit: BoxFit.cover,
                 )),
-                //Icon Man
+                //Icon Engineer
                 Positioned(
                   top: parentHeight * 0.01,
                   bottom: parentHeight * 0.6,
-                  left: parentWidth * 0.25,
-                  right: parentWidth * 0.25,
+                  left: parentWidth * 0.18,
+                  right: parentWidth * 0.18,
                   // right: parentWidth * 0.5,
                   child: Image.asset(
-                    'assets/icons/man.png',
-                    scale: 1,
+                    'assets/icons/engineer.png',
+                    scale: 0.01,
                   ),
                 ),
                 //Text
                 Positioned(
-                    top: parentHeight * 0.38, // Jarak dari atas layar
+                    top: parentHeight * 0.34, // Jarak dari atas layar
                     right: parentWidth * 0.1, // Jarak dari sisi kanan layar
                     left: parentWidth * 0.18, // Jarak dari sisi kiri layar
                     child: Text(
@@ -77,7 +77,7 @@ class UserPage extends StatelessWidget {
                     )),
                 //Button User
                 Positioned(
-                  top: parentHeight * 0.45,
+                  top: parentHeight * 0.54,
                   left: parentWidth * 0.38,
                   right: parentWidth * 0.38,
                   child: ElevatedButton(
@@ -105,7 +105,7 @@ class UserPage extends StatelessWidget {
                 ),
                 //Input Nama
                 Positioned(
-                    bottom: parentHeight * 0.35,
+                    bottom: parentHeight * 0.265,
                     left: parentWidth * 0.1,
                     right: parentWidth * 0.1,
                     child: Container(
@@ -124,7 +124,7 @@ class UserPage extends StatelessWidget {
 
                 //Input Divisi
                 Positioned(
-                    bottom: parentHeight * 0.25,
+                    bottom: parentHeight * 0.18,
                     left: parentWidth * 0.1,
                     right: parentWidth * 0.1,
                     child: Container(
