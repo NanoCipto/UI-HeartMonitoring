@@ -9,3 +9,4 @@ export 'package:fitness/pages/hrvpages_old.dart';
 export 'package:fitness/pages/main_menu.dart';
 export 'package:fitness/pages/quesioner_pages.dart';
 export 'package:fitness/pages/user.dart';
+export 'package:fitness/state_util.dart';

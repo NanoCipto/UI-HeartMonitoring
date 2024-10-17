@@ -1,5 +1,5 @@
 // import 'dart:ffi';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fitness/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -9,7 +9,6 @@ import 'dart:async';
 // import 'package:path_provider/path_provider.dart';
 // import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
-
 
 class DeviceScanScreen extends StatefulWidget {
   final String nama;
@@ -45,7 +44,51 @@ class _DeviceScanScreenState extends State<DeviceScanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Heart Rate Device'),
+        backgroundColor: const Color.fromARGB(255, 241, 3, 3),
+        title: Center(
+          child: Text(
+            'Select Heart Rate Devices',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 19,
+            ),
+          ),
+        ),
+        leading: Container(
+          margin: EdgeInsets.all(10), // Jarak tombol dari tepi
+          child: ElevatedButton(
+            onPressed: () {
+              // Navigator Pop untuk kembali ke menu sebelumnya
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xffF7F8F8), // Warna latar tombol
+              padding: EdgeInsets.all(10), // Padding di dalam tombol
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10), // Bentuk sudut bulat
+              ),
+            ),
+            child: SvgPicture.asset(
+              'assets/icons/Arrow - Left 2.svg', // Gambar ikon panah kiri
+              width: 24, // Lebar ikon
+              height: 24, // Tinggi ikon
+            ),
+          ),
+        ),
+        actions: [
+          Padding(
+            //Logo Quesioner
+            padding: const EdgeInsets.only(right: 8.0),
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: SvgPicture.asset(
+                'assets/icons/HRV.svg',
+              ),
+            ),
+          )
+        ],
       ),
       body: ListView.builder(
         itemCount: scanResults.length,
@@ -63,7 +106,7 @@ class _DeviceScanScreenState extends State<DeviceScanScreen> {
                     device: result.device,
                     nama: widget.nama,
                     divisi: widget.divisi,
-                    ),
+                  ),
                 ),
               );
             },
@@ -83,7 +126,8 @@ class HeartRateMonitor extends StatefulWidget {
   final String nama;
   final String divisi;
 
-  HeartRateMonitor({required this.device, required this.nama, required this.divisi});
+  HeartRateMonitor(
+      {required this.device, required this.nama, required this.divisi});
 
   @override
   _HeartRateMonitorState createState() => _HeartRateMonitorState();
@@ -230,7 +274,7 @@ class _HeartRateMonitorState extends State<HeartRateMonitor> {
         builder: (context) => HomePage(
           nama: widget.nama,
           divisi: widget.divisi,
-          collectedData: collectedData,  // kirim data ke HomePage
+          collectedData: collectedData, // kirim data ke HomePage
         ),
       ),
     );
@@ -344,7 +388,51 @@ class _HeartRateMonitorState extends State<HeartRateMonitor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Heart Rate Monitor'),
+        backgroundColor: const Color.fromARGB(255, 241, 3, 3),
+        title: Center(
+          child: Text(
+            'Heart Rate Monitor',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 19,
+            ),
+          ),
+        ),
+        leading: Container(
+          margin: EdgeInsets.all(10), // Jarak tombol dari tepi
+          child: ElevatedButton(
+            onPressed: () {
+              // Navigator Pop untuk kembali ke menu sebelumnya
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xffF7F8F8), // Warna latar tombol
+              padding: EdgeInsets.all(10), // Padding di dalam tombol
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10), // Bentuk sudut bulat
+              ),
+            ),
+            child: SvgPicture.asset(
+              'assets/icons/Arrow - Left 2.svg', // Gambar ikon panah kiri
+              width: 24, // Lebar ikon
+              height: 24, // Tinggi ikon
+            ),
+          ),
+        ),
+        actions: [
+          Padding(
+            //Logo Quesioner
+            padding: const EdgeInsets.only(right: 8.0),
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: SvgPicture.asset(
+                'assets/icons/HRV.svg',
+              ),
+            ),
+          )
+        ],
       ),
       body: isConnected
           ? SingleChildScrollView(
