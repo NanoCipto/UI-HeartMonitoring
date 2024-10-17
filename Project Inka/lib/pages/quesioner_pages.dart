@@ -1,8 +1,14 @@
+import 'package:fitness/pages/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class QuesionerPages extends StatefulWidget {
-  const QuesionerPages({super.key});
+  final Map<String, dynamic> collectedData;
+
+  QuesionerPages({required this.collectedData});
 
   @override
   State<QuesionerPages> createState() => _QuesionerPagesState();
@@ -43,6 +49,35 @@ class _QuesionerPagesState extends State<QuesionerPages> {
     } else {
       return 'Pekerja mengalami stress dengan kategori sangat berat';
     }
+  }
+
+  //Fungsi Penggabungan Hasil Perhitungan Dan Data Sebelumnya
+  void SubmitAndUploadData() {
+    int totalScore = selectedValues.reduce((a, b) => a + b);
+    String resultCategory = calculateScoreCategory(totalScore);
+
+    //Penggabungan Data
+    Map<String, dynamic> finalData = Map.from(widget.collectedData);
+    finalData['Quesioner Skor'] = totalScore;
+    finalData['Stress Category'] = resultCategory;
+
+    //Upload Firebase
+    DateTime waktuaktual = DateTime.now();
+    String url = "https://heartratemonitoring-c0e5d-default-rtdb.firebaseio.com/data/${DateFormat('yyyy-MM-dd').format(waktuaktual)}/${DateFormat('HH-mm-ss').format(waktuaktual)}.json";
+
+    http.patch(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(finalData),
+    ).then((response) {
+      if (response.statusCode == 200) {
+        print('Data uploaded successfully');
+      } else {
+        print('Failed to upload data. Status code: ${response.statusCode}');
+      }
+    });
   }
 
   @override
@@ -96,43 +131,43 @@ class _QuesionerPagesState extends State<QuesionerPages> {
         ],
       ),
       body: ListView.builder(
-        itemCount: questions.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.all(8),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${index + 1}.${questions[index]}',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: List.generate(4, (i) {
-                      return Row(
-                        children: [
-                          Radio<int>(
-                            value: i,
-                            groupValue: selectedValues[index],
-                            onChanged: (value) {
-                              setState(() {
-                                selectedValues[index] = value!;
-                              });
-                            },
-                          ),
-                          Text('$i'),
-                        ],
-                      );
-                    }),
-                  )
-                ],
+          itemCount: questions.length,
+          itemBuilder: (context, index) {
+            return Card(
+              margin: EdgeInsets.all(8),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${index + 1}.${questions[index]}',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: List.generate(4, (i) {
+                        return Row(
+                          children: [
+                            Radio<int>(
+                              value: i,
+                              groupValue: selectedValues[index],
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedValues[index] = value!;
+                                });
+                              },
+                            ),
+                            Text('$i'),
+                          ],
+                        );
+                      }),
+                    )
+                  ],
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           int totalScore = selectedValues.reduce((a, b) => a + b);
@@ -168,74 +203,103 @@ class ResultPage extends StatelessWidget {
         backgroundColor: Color.fromRGBO(94, 169, 246, 1),
         title: Text(
           'Hasil Penilaian Stress',
-          style: TextStyle(
-            fontWeight: FontWeight.bold
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         leading: Container(
-            margin: EdgeInsets.all(10), // Jarak tombol dari tepi
-            child: ElevatedButton(
-              onPressed: () {
-                // Navigator Pop untuk kembali ke menu sebelumnya
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xffF7F8F8), // Warna latar tombol
-                padding: EdgeInsets.all(10), // Padding di dalam tombol
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Bentuk sudut bulat
-                ),
-              ),
-              child: SvgPicture.asset(
-                'assets/icons/Arrow - Left 2.svg', // Gambar ikon panah kiri
-                width: 24, // Lebar ikon
-                height: 24, // Tinggi ikon
+          margin: EdgeInsets.all(10), // Jarak tombol dari tepi
+          child: ElevatedButton(
+            onPressed: () {
+              // Navigator Pop untuk kembali ke menu sebelumnya
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xffF7F8F8), // Warna latar tombol
+              padding: EdgeInsets.all(10), // Padding di dalam tombol
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10), // Bentuk sudut bulat
               ),
             ),
+            child: SvgPicture.asset(
+              'assets/icons/Arrow - Left 2.svg', // Gambar ikon panah kiri
+              width: 24, // Lebar ikon
+              height: 24, // Tinggi ikon
+            ),
           ),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final parentWidth = constraints.maxWidth;
+          final parentHeight = constraints.maxHeight;
+          return Stack(children: [
+            Positioned(
+              child: Text(
                 'Skor Total: $totalScore',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 20),
-              ElevatedButton(
+            ),
+            Positioned(
+              child: ElevatedButton(
                 onPressed: () {
-                      // Aksi ketika tombol Back ditekan
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange, // Warna latar tombol
-                      foregroundColor: Colors.black, // Warna teks tombol
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 0.5), // Ukuran padding
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            0), // Border persegi dengan sudut melengkung
-                      ),
-                    ),
-                    child: Text(
-                      resultCategory,
-                      style: TextStyle(fontSize: 22, color: Colors.white),
-                      textAlign: TextAlign.center,
+                  // Aksi ketika tombol Back ditekan
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange, // Warna latar tombol
+                  foregroundColor: Colors.black, // Warna teks tombol
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 0.5), // Ukuran padding
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                        0), // Border persegi dengan sudut melengkung
+                  ),
+                ),
+                child: Text(
+                  resultCategory,
+                  style: TextStyle(fontSize: 22, color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
               ),
+            ),
+            Positioned(
+              bottom: parentHeight * 0.2,
+              left: parentWidth * 0.3,
+              right: parentWidth * 0.3,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Aksi ketika tombol Back ditekan
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => UserPage()));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white, // Warna latar tombol
+                  foregroundColor: Colors.black, // Warna teks tombol
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 20, vertical: 15), // Ukuran padding
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                        40), // Border persegi dengan sudut melengkung
+                  ),
+                ),
+                child: Text(
+                  'SIMPAN KE DATABASE',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: const Color.fromARGB(255, 0, 61, 111)),
+                ),
               ),
-              SizedBox(height: 40),
-              ElevatedButton(
+            ),
+            Positioned(
+              child: ElevatedButton(
                 onPressed: () {
                   // Kembali ke halaman pertama
                   Navigator.pop(context);
                 },
                 child: Text('Kembali'),
               ),
-            ],
-          ),
-        ),
+            )
+          ]);
+        },
       ),
     );
   }

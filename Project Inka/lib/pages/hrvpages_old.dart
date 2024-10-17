@@ -1,5 +1,6 @@
 // import 'dart:ffi';
 
+import 'package:fitness/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 // import 'package:excel/excel.dart';
@@ -8,24 +9,13 @@ import 'dart:async';
 // import 'package:path_provider/path_provider.dart';
 // import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:intl/intl.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: DeviceScanScreen(),
-    );
-  }
-}
 
 class DeviceScanScreen extends StatefulWidget {
+  final String nama;
+  final String divisi;
+
+  DeviceScanScreen({required this.nama, required this.divisi});
   @override
   _DeviceScanScreenState createState() => _DeviceScanScreenState();
 }
@@ -69,7 +59,11 @@ class _DeviceScanScreenState extends State<DeviceScanScreen> {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => HeartRateMonitor(device: result.device),
+                  builder: (context) => HeartRateMonitor(
+                    device: result.device,
+                    nama: widget.nama,
+                    divisi: widget.divisi,
+                    ),
                 ),
               );
             },
@@ -86,14 +80,17 @@ class _DeviceScanScreenState extends State<DeviceScanScreen> {
 
 class HeartRateMonitor extends StatefulWidget {
   final BluetoothDevice device;
+  final String nama;
+  final String divisi;
 
-  HeartRateMonitor({required this.device});
+  HeartRateMonitor({required this.device, required this.nama, required this.divisi});
 
   @override
   _HeartRateMonitorState createState() => _HeartRateMonitorState();
 }
 
 class _HeartRateMonitorState extends State<HeartRateMonitor> {
+  Map<String, dynamic> collectedData = {};
   double stressIndex = 0.0;
   double amo = 0.0;
   double modus = 0.0;
@@ -201,30 +198,42 @@ class _HeartRateMonitorState extends State<HeartRateMonitor> {
     }
   }
 
-  void generateExcel() async {
-    DateTime waktuaktual = DateTime.now();
-    String url =
-        "https://heartratemonitoring-c0e5d-default-rtdb.firebaseio.com/data/${DateFormat('yyyy-MM-dd').format(waktuaktual)}/${DateFormat('HH-mm-ss').format(waktuaktual)}.json";
-    Map<String, String> data = {
-      "BPM List": bpmwaktu.toString(),
-      "Amo": amo.toString(),
-      "Modus": modus.toString(),
-      "RRInterval": rrintervalwaktu.toString(),
-      'MxDMn': MxDMn.toString(),
-      "StresIndex": stressIndex.toString()
-    };
-    final response = await http.patch(
-      Uri.parse(url),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(data),
+  void SaveData() {
+    // DateTime waktuaktual = DateTime.now();
+    // String url =
+    //     "https://heartratemonitoring-c0e5d-default-rtdb.firebaseio.com/data/${DateFormat('yyyy-MM-dd').format(waktuaktual)}/${DateFormat('HH-mm-ss').format(waktuaktual)}.json";
+    collectedData['Nama'] = widget.nama;
+    collectedData['Divisi'] = widget.divisi;
+    collectedData["BPM List"] = bpmwaktu.toString();
+    collectedData["Amo"] = amo.toString();
+    collectedData["Modus"] = modus.toString();
+    collectedData["RRInterval"] = rrintervalwaktu.toString();
+    collectedData["MxDMn"] = MxDMn.toString();
+    collectedData["StresIndex"] = stressIndex.toString();
+    // final response = await http.patch(
+    //   Uri.parse(url),
+    //   headers: <String, String>{
+    //     'Content-Type': 'application/json; charset=UTF-8',
+    //   },
+    //   body: jsonEncode(data),
+    // );
+    // if (response.statusCode == 200) {
+    //   print('Data uploaded successfully');
+    // } else {
+    //   print('Failed to upload data. Status code: ${response.statusCode}');
+    // }
+
+    // Back to HomePage
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePage(
+          nama: widget.nama,
+          divisi: widget.divisi,
+          collectedData: collectedData,  // kirim data ke HomePage
+        ),
+      ),
     );
-    if (response.statusCode == 200) {
-      print('Data uploaded successfully');
-    } else {
-      print('Failed to upload data. Status code: ${response.statusCode}');
-    }
   }
 
   void calculateMetrics() {
@@ -450,9 +459,9 @@ class _HeartRateMonitorState extends State<HeartRateMonitor> {
                       ? ElevatedButton(
                           onPressed: () async {
                             // await requestStoragePermission();
-                            generateExcel();
+                            SaveData();
                           },
-                          child: Text('Save ke Database'),
+                          child: Text('Simpan Data'),
                         )
                       : Text(''),
 

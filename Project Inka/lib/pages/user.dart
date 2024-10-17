@@ -147,12 +147,15 @@ class UserPage extends StatelessWidget {
                   right: parentWidth * 0.3,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Aksi ketika tombol Back ditekan
+                      String nama = _namaController.text;
+                      String divisi = _divisiController.text;
+                      // Aksi ketika tombol Submit ditekan
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  HomePage() //Menuju ke Halaman Hrv
+                              builder: (context) => HomePage(
+                                  nama: nama,
+                                  divisi: divisi) //Menuju ke Halaman Hrv
                               ));
                     },
                     style: ElevatedButton.styleFrom(

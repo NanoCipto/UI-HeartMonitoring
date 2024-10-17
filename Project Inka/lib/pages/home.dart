@@ -3,11 +3,21 @@ import 'package:fitness/pages/quesioner_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  final String nama;
+  final String divisi;
+  final Map<String, dynamic>? collectedData;
+
+  HomePage({required this.nama, required this.divisi, this.collectedData});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
   Widget build(BuildContext context) {
+    final collectedData = widget.collectedData ?? {};
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -60,8 +70,9 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  DeviceScanScreen() //Menuju ke Halaman Hrv
+                              builder: (context) => DeviceScanScreen(
+                                  nama: widget.nama,
+                                  divisi: widget.divisi) //Menuju ke Halaman Hrv
                               ));
                     },
                     style: ElevatedButton.styleFrom(
@@ -84,7 +95,10 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DeviceScanScreen()));
+                              builder: (context) => DeviceScanScreen(
+                                    nama: widget.nama,
+                                    divisi: widget.divisi,
+                                  )));
                     },
                     child: Text(
                       "CEK HRV",
@@ -105,9 +119,8 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  QuesionerPages() //Menuju ke Halaman Hrv
-                              ));
+                              builder: (context) =>QuesionerPages(collectedData: collectedData) //Menuju ke Halaman Hrv
+                              ),);
                     },
                     style: ElevatedButton.styleFrom(
                       // backgroundColor: Colors.white, // Warna latar tombol
@@ -129,7 +142,7 @@ class HomePage extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => QuesionerPages()));
+                                builder: (context) => QuesionerPages(collectedData: collectedData)));
                       },
                       child: Text(
                         "QUESIONER",
@@ -175,5 +188,4 @@ class HomePage extends StatelessWidget {
         }));
   }
 }
-
 //Coba
