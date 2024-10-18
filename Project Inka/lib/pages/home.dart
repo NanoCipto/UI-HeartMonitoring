@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool showCollectedData = false;
   @override
   Widget build(BuildContext context) {
     final collectedData = widget.collectedData ?? {};
@@ -117,10 +118,13 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () {
                       // Aksi ketika tombol bulat ditekan
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>QuesionerPages(collectedData: collectedData) //Menuju ke Halaman Hrv
-                              ),);
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => QuesionerPages(
+                                collectedData:
+                                    collectedData) //Menuju ke Halaman Hrv
+                            ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       // backgroundColor: Colors.white, // Warna latar tombol
@@ -142,7 +146,8 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => QuesionerPages(collectedData: collectedData)));
+                                builder: (context) => QuesionerPages(
+                                    collectedData: collectedData)));
                       },
                       child: Text(
                         "QUESIONER",
@@ -152,6 +157,61 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ))),
+
+              // Tombol untuk menampilkan collectedData
+              // Positioned(
+              //   top: parentHeight * 0.6, // Posisi tombol di layar
+              //   left: parentWidth * 0.1,
+              //   right: parentWidth * 0.1,
+              //   child: ElevatedButton(
+              //     onPressed: () {
+              //       setState(() {
+              //         showCollectedData =
+              //             !showCollectedData; // Toggle tampil data
+              //       });
+              //     },
+              //     style: ElevatedButton.styleFrom(
+              //       backgroundColor: Colors.blueAccent,
+              //       padding: EdgeInsets.symmetric(
+              //           horizontal: 80, vertical: 12), // Ukuran padding
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(8),
+              //       ),
+              //     ),
+              //     child: Text(
+              //       showCollectedData ? 'Hide Data' : 'Show Collected Data',
+              //       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              //     ),
+              //   ),
+              // ),
+
+              // Tampilkan data jika tombol ditekan
+              // if (showCollectedData)
+              //   Positioned(
+              //     top: parentHeight * 0.7,
+              //     left: parentWidth * 0.1,
+              //     right: parentWidth * 0.1,
+              //     child: Container(
+              //       padding: EdgeInsets.all(10),
+              //       color: Colors.white.withOpacity(0.8),
+              //       child: Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: collectedData.entries
+              //             .map((entry) => Padding(
+              //                   padding:
+              //                       const EdgeInsets.symmetric(vertical: 5),
+              //                   child: Text(
+              //                     '${entry.key}: ${entry.value}',
+              //                     style: TextStyle(
+              //                         fontSize: 18,
+              //                         fontWeight: FontWeight.bold),
+              //                   ),
+              //                 ))
+              //             .toList(),
+              //       ),
+              //     ),
+              //   ),
+
               // Tombol Back di atas background
               Positioned(
                 bottom: 80, // Atur jarak tombol dari bawah layar

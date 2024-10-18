@@ -243,9 +243,6 @@ class _HeartRateMonitorState extends State<HeartRateMonitor> {
   }
 
   void SaveData() {
-    // DateTime waktuaktual = DateTime.now();
-    // String url =
-    //     "https://heartratemonitoring-c0e5d-default-rtdb.firebaseio.com/data/${DateFormat('yyyy-MM-dd').format(waktuaktual)}/${DateFormat('HH-mm-ss').format(waktuaktual)}.json";
     collectedData['Nama'] = widget.nama;
     collectedData['Divisi'] = widget.divisi;
     collectedData["BPM List"] = bpmwaktu.toString();
@@ -254,18 +251,6 @@ class _HeartRateMonitorState extends State<HeartRateMonitor> {
     collectedData["RRInterval"] = rrintervalwaktu.toString();
     collectedData["MxDMn"] = MxDMn.toString();
     collectedData["StresIndex"] = stressIndex.toString();
-    // final response = await http.patch(
-    //   Uri.parse(url),
-    //   headers: <String, String>{
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //   },
-    //   body: jsonEncode(data),
-    // );
-    // if (response.statusCode == 200) {
-    //   print('Data uploaded successfully');
-    // } else {
-    //   print('Failed to upload data. Status code: ${response.statusCode}');
-    // }
 
     // Back to HomePage
     Navigator.push(
@@ -552,7 +537,28 @@ class _HeartRateMonitorState extends State<HeartRateMonitor> {
                           child: Text('Simpan Data'),
                         )
                       : Text(''),
-
+                  // SizedBox(height: 20),
+                  // Text(
+                  //   'Collected Data:',
+                  //   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  // ),
+                  // // Menampilkan dictionary collectedData
+                  // collectedData.isNotEmpty
+                  //     ? ListView.builder(
+                  //         shrinkWrap:
+                  //             true, // Agar tidak terjadi masalah overflow
+                  //         itemCount: collectedData.length,
+                  //         itemBuilder: (context, index) {
+                  //           String key = collectedData.keys.elementAt(index);
+                  //           String value = collectedData[key]!;
+                  //           return ListTile(
+                  //             title: Text('$key:'),
+                  //             subtitle: Text('$value'),
+                  //           );
+                  //         },
+                  //       )
+                  //     : Text('No data available'),
+                  // SizedBox(height: 20),
                   // Display services and characteristics
                   Column(
                     children: services.map((service) {

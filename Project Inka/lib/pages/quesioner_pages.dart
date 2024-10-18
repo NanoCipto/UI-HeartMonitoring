@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
-import 'dart:async';
 
 class QuesionerPages extends StatefulWidget {
   final Map<String, dynamic> collectedData;
@@ -16,6 +15,25 @@ class QuesionerPages extends StatefulWidget {
 
 class _QuesionerPagesState extends State<QuesionerPages> {
   List<int> selectedValues = List.filled(14, 0);
+
+  void PerhitunganData() {
+    int totalScore = selectedValues.reduce((a, b) => a + b);
+    String resultCategory = calculateScoreCategory(totalScore);
+
+    Map<String, dynamic> updatedCollectedData = Map.from(widget.collectedData);
+    updatedCollectedData['Quesioner Skor'] = totalScore;
+    updatedCollectedData['Stress Category'] = resultCategory;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultPage(
+          totalScore: totalScore,
+          resultCategory: resultCategory,
+          collectedData: updatedCollectedData,
+        ),
+      ),
+    );
+  }
 
   // List Pertanyaan
   final List<String> questions = [
@@ -49,18 +67,6 @@ class _QuesionerPagesState extends State<QuesionerPages> {
     } else {
       return 'Pekerja mengalami stress dengan kategori sangat berat';
     }
-  }
-
-  //Fungsi Penggabungan Hasil Perhitungan Dan Data Sebelumnya
-  void PenggabunganAllData() {
-    int totalScore = selectedValues.reduce((a, b) => a + b);
-    String resultCategory = calculateScoreCategory(totalScore);
-
-    //Penggabungan Data
-    Map<String, dynamic> collectedData = Map.from(widget.collectedData);
-    collectedData['Quesioner Skor'] = totalScore;
-    collectedData['Stress Category'] = resultCategory;
-    print(collectedData);
   }
 
   @override
@@ -163,20 +169,8 @@ class _QuesionerPagesState extends State<QuesionerPages> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          int totalScore = selectedValues.reduce((a, b) => a + b);
-          String resultCategory = calculateScoreCategory(totalScore);
-          PenggabunganAllData();
           //Navigasi
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ResultPage(
-                totalScore: totalScore,
-                resultCategory: resultCategory,
-                collectedData: widget.collectedData,
-              ),
-            ),
-          );
+          PerhitunganData();
         },
         child: Icon(Icons.check),
       ),
@@ -194,61 +188,90 @@ class ResultPage extends StatelessWidget {
       required this.resultCategory,
       required this.collectedData});
 
-  // void SubmitAndUploadData() {
-  //   //Upload Firebase
-  //   DateTime waktuaktual = DateTime.now();
-  //   String url =
-  //       "https://heartratemonitoring-c0e5d-default-rtdb.firebaseio.com/data/${DateFormat('yyyy-MM-dd').format(waktuaktual)}/${DateFormat('HH-mm-ss').format(waktuaktual)}.json";
-  //   http
-  //       .patch(
-  //     Uri.parse(url),
-  //     headers: <String, String>{
-  //       'Content-Type': 'application/json; charset=UTF-8',
-  //     },
-  //     body: jsonEncode(collectedData),
-  //   )
-  //       .then((response) {
-  //     if (response.statusCode == 200) {
-  //       print('Data uploaded successfully');
-  //     } else {
-  //       print('Failed to upload data. Status code: ${response.statusCode}');
-  //     }
-  //   });
-  //   print(collectedData);
-  // }
+  void showCollectedDataDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Collected Data'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: collectedData.entries
+                .map((entry) => Text('${entry.key}: ${entry.value.toString()}'))
+                .toList(),
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
-  Future<void> SubmitAndUploadData(Map<String, String> collectedData) async {
+  void SubmitAndUploadData(BuildContext context) {
     //Upload Firebase
     DateTime waktuaktual = DateTime.now();
     String url =
         "https://heartratemonitoring-c0e5d-default-rtdb.firebaseio.com/data/${DateFormat('yyyy-MM-dd').format(waktuaktual)}/${DateFormat('HH-mm-ss').format(waktuaktual)}.json";
-
-    // Memastikan collectedData ada
-    if (collectedData.isEmpty) {
-      print('Error: collectedData is empty.');
-      return; // Jangan lanjutkan jika datanya kosong
-    }
-
-    try {
-      final response = await http.patch(
-        Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(collectedData), // Mengirim collectedData sebagai JSON
-      );
-
+    http
+        .patch(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(collectedData),
+    )
+        .then((response) {
+      String message;
       if (response.statusCode == 200) {
-        print('Data uploaded successfully');
+        message = 'Data uploaded successfully';
       } else {
-        print('Failed to upload data. Status code: ${response.statusCode}');
-        print(
-            'Response body: ${response.body}'); // Cetak body response untuk debugging
+        message = 'Failed to upload data. Status code: ${response.statusCode}';
       }
-    } catch (error) {
-      print(
-          'Error occurred during upload: $error'); // Tangani kesalahan jaringan atau lainnya
-    }
+
+      // Display pop-up dialog with status message
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Upload Status'),
+            content: Text(message),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }).catchError((error) {
+      // Handle network error or other exceptions
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('An error occurred: $error'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      print('Error occurred: $error');
+    });
   }
 
   @override
@@ -344,47 +367,37 @@ class ResultPage extends StatelessWidget {
               ),
             ),
             Positioned(
+              bottom: parentHeight * 0.35,
+              left: parentWidth * 0.15,
+              right: parentWidth * 0.15,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Tampilkan data collectedData sebelum dikirim ke Firebase
+                  showCollectedDataDialog(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent, // Warna tombol
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                ),
+                child: Text(
+                  'CEK DATA',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+              ),
+            ),
+            Positioned(
               bottom: parentHeight * 0.2,
               left: parentWidth * 0.15,
               right: parentWidth * 0.15,
               child: ElevatedButton(
-                onPressed: () async {
-                  // Aksi ketika tombol Simpan Database ditekan
-                  await (Map<String, String> collectedData) async {
-                    //Upload Firebase
-                    DateTime waktuaktual = DateTime.now();
-                    String url =
-                        "https://heartratemonitoring-c0e5d-default-rtdb.firebaseio.com/data/${DateFormat('yyyy-MM-dd').format(waktuaktual)}/${DateFormat('HH-mm-ss').format(waktuaktual)}.json";
-
-                    // Memastikan collectedData ada
-                    if (collectedData.isEmpty) {
-                      print('Error: collectedData is empty.');
-                      return; // Jangan lanjutkan jika datanya kosong
-                    }
-
-                    try {
-                      final response = await http.patch(
-                        Uri.parse(url),
-                        headers: <String, String>{
-                          'Content-Type': 'application/json; charset=UTF-8',
-                        },
-                        body: jsonEncode(
-                            collectedData), // Mengirim collectedData sebagai JSON
-                      );
-
-                      if (response.statusCode == 200) {
-                        print('Data uploaded successfully');
-                      } else {
-                        print(
-                            'Failed to upload data. Status code: ${response.statusCode}');
-                        print(
-                            'Response body: ${response.body}'); // Cetak body response untuk debugging
-                      }
-                    } catch (error) {
-                      print(
-                          'Error occurred during upload: $error'); // Tangani kesalahan jaringan atau lainnya
-                    }
-                  };
+                onPressed: () {
+                  SubmitAndUploadData(context);
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) => UserPage()));
                 },
