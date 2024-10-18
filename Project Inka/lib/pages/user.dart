@@ -87,6 +87,8 @@ class UserPage extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange, // Warna latar tombol
                       foregroundColor: Colors.black, // Warna teks tombol
+                      elevation: 4, // Nilai elevasi untuk menambahkan bayangan
+                      shadowColor: Colors.black, // Warna bayangan (opsional)
                       padding: EdgeInsets.symmetric(
                           horizontal: 10, vertical: 0.5), // Ukuran padding
                       shape: RoundedRectangleBorder(
@@ -161,6 +163,8 @@ class UserPage extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green, // Warna latar tombol
                       foregroundColor: Colors.black, // Warna teks tombol
+                      elevation: 6, // Nilai elevasi untuk menambahkan bayangan
+                      shadowColor: Colors.black, // Warna bayangan (opsional)
                       padding: EdgeInsets.symmetric(
                           horizontal: 20, vertical: 0.5), // Ukuran padding
                       shape: RoundedRectangleBorder(

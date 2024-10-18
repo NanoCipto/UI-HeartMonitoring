@@ -78,6 +78,8 @@ class MainMenu extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white, // Warna latar tombol
                       foregroundColor: Colors.black, // Warna teks tombol
+                      elevation: 6, // Nilai elevasi untuk menambahkan bayangan
+                      shadowColor: Colors.black, // Warna bayangan (opsional)
                       padding: EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15), // Ukuran padding
                       shape: RoundedRectangleBorder(
@@ -109,6 +111,8 @@ class MainMenu extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white, // Warna latar tombol
                       foregroundColor: Colors.black, // Warna teks tombol
+                      elevation: 6, // Nilai elevasi untuk menambahkan bayangan
+                      shadowColor: Colors.black, // Warna bayangan (opsional)
                       padding: EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15), // Ukuran padding
                       shape: RoundedRectangleBorder(

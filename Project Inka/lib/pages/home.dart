@@ -79,8 +79,9 @@ class _HomePageState extends State<HomePage> {
                     style: ElevatedButton.styleFrom(
                       // backgroundColor: Colors.white, // Warna latar tombol
                       shape: CircleBorder(), // Membuat tombol berbentuk bulat
-                      padding: EdgeInsets.all(
-                          5), // Ukuran padding untuk membuat tombol bulat
+                      padding: EdgeInsets.all(5), // Ukuran padding untuk membuat tombol bulat
+                      elevation: 6, // Nilai elevasi untuk menambahkan bayangan
+                      shadowColor: Colors.black, // Warna bayangan (opsional)
                     ),
                     child: Transform.scale(
                       scale: 0.9,
@@ -129,8 +130,9 @@ class _HomePageState extends State<HomePage> {
                     style: ElevatedButton.styleFrom(
                       // backgroundColor: Colors.white, // Warna latar tombol
                       shape: CircleBorder(), // Membuat tombol berbentuk bulat
-                      padding: EdgeInsets.all(
-                          5), // Ukuran padding untuk membuat tombol bulat
+                      padding: EdgeInsets.all(5), // Ukuran padding untuk membuat tombol bulat
+                      elevation: 6, // Nilai elevasi untuk menambahkan bayangan
+                      shadowColor: Colors.black, // Warna bayangan (opsional)
                     ),
                     child: Transform.scale(
                       scale: 0.9,
@@ -214,35 +216,28 @@ class _HomePageState extends State<HomePage> {
 
               // Tombol Back di atas background
               Positioned(
-                bottom: 80, // Atur jarak tombol dari bawah layar
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Aksi ketika tombol Back ditekan
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white, // Warna latar tombol
-                      foregroundColor: Colors.black, // Warna teks tombol
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 80, vertical: 12), // Ukuran padding
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            8), // Border persegi dengan sudut melengkung
-                      ),
-                    ),
-                    child: Text(
-                      'BACK',
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: const Color.fromARGB(255, 0, 61, 111)),
-                    ),
-                  ),
+              bottom: parentHeight * 0.1,
+              left: parentWidth * 0.22,
+              right: parentWidth * 0.22,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Kembali ke halaman pertama
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 6, // Nilai elevasi untuk menambahkan bayangan
+                  shadowColor: Colors.black, // Warna bayangan (opsional)
+                  minimumSize: Size(100, 50)
+                ),
+                child: Text(
+                  'KEMBALI',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: const Color.fromARGB(255, 0, 61, 111)),
                 ),
               ),
+            )
             ],
           );
         }));

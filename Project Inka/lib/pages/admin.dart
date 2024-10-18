@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({super.key});
@@ -136,6 +137,8 @@ class _AdminPageState extends State<AdminPage> {
                       // Aksi ketika tombol Back ditekan
                     },
                     style: ElevatedButton.styleFrom(
+                      elevation: 4, // Nilai elevasi untuk menambahkan bayangan
+                      shadowColor: Colors.black, // Warna bayangan (opsional)
                       backgroundColor: Colors.orange, // Warna latar tombol
                       foregroundColor: Colors.black, // Warna teks tombol
                       padding: EdgeInsets.symmetric(
@@ -205,6 +208,8 @@ class _AdminPageState extends State<AdminPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green, // Warna latar tombol
                       foregroundColor: Colors.black, // Warna teks tombol
+                      elevation: 6, // Nilai elevasi untuk menambahkan bayangan
+                      shadowColor: Colors.black, // Warna bayangan (opsional)
                       padding: EdgeInsets.symmetric(
                           horizontal: 20, vertical: 0.5), // Ukuran padding
                       shape: RoundedRectangleBorder(
@@ -228,8 +233,15 @@ class _AdminPageState extends State<AdminPage> {
   }
 }
 
-class ReportPages extends StatelessWidget {
+class ReportPages extends StatefulWidget {
   const ReportPages({super.key});
+
+  @override
+  State<ReportPages> createState() => _ReportPagesState();
+}
+
+class _ReportPagesState extends State<ReportPages> {
+  final DatabaseReference databaseReference = FirebaseDatabase.instance.ref().child('data');
 
   @override
   Widget build(BuildContext context) {
@@ -273,8 +285,8 @@ class ReportPages extends StatelessWidget {
               ),
               Positioned(
                 top: parentHeight * 0.03,
-                right: parentHeight * 0.09,
-                left: parentHeight * 0.09,
+                right: parentHeight * 0.2,
+                left: parentHeight * 0.2,
                 child: ElevatedButton(
                   onPressed: () {
                     // Aksi ketika tombol Back ditekan
@@ -282,6 +294,8 @@ class ReportPages extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white, // Warna latar tombol
                     foregroundColor: Colors.black, // Warna teks tombol
+                    elevation: 6, // Nilai elevasi untuk menambahkan bayangan
+                    shadowColor: Colors.black, // Warna bayangan (opsional)
                     padding: EdgeInsets.symmetric(
                         horizontal: 50, vertical: 12), // Ukuran padding
                     shape: RoundedRectangleBorder(
@@ -298,8 +312,65 @@ class ReportPages extends StatelessWidget {
                   ),
                 ),
               ),
+              Center(
+                child: StreamBuilder(
+                  stream: databaseReference.onValue,
+                  builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+                    if (snapshot.hasData && !snapshot.hasError) {
+                      DataSnapshot? dataSnapshot = snapshot.data!.snapshot;
+                      if (dataSnapshot.value != null) {
+                        Map<dynamic, dynamic> data =
+                            dataSnapshot.value as Map<dynamic, dynamic>;
+
+                        // Extract data based on your structure
+                        List<Map<String, dynamic>> tableData = [];
+                        data.forEach((dateKey, timeData) {
+                          timeData.forEach((timeKey, values) {
+                            tableData.add(Map<String, dynamic>.from(values));
+                          });
+                        });
+
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(
+                            columns: const [
+                              DataColumn(label: Text('Nama')),
+                              DataColumn(label: Text('Divisi')),
+                              DataColumn(label: Text('Amo')),
+                              DataColumn(label: Text('Modus')),
+                              DataColumn(label: Text('MxDMn')),
+                              DataColumn(label: Text('Stress Index')),
+                              DataColumn(label: Text('Stress Category')),
+                            ],
+                            rows: tableData.map((rowData) {
+                              return DataRow(cells: [
+                                DataCell(Text(rowData['Nama'] ?? '')),
+                                DataCell(Text(rowData['Divisi'] ?? '')),
+                                DataCell(Text(rowData['Amo'] ?? '')),
+                                DataCell(Text(rowData['Modus'] ?? '')),
+                                DataCell(Text(rowData['MxDMn'] ?? '')),
+                                DataCell(Text(rowData['StresIndex'] ?? '')),
+                                DataCell(Text(rowData['Stress Category'] ?? '')),
+                              ]);
+                            }).toList(),
+                          ),
+                        );
+                      } else {
+                        return Center(child: Text('No data available.'));
+                      }
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  },
+                ),
+              )
             ],
           );
-        }));
+        }),
+        
+        );
   }
+
 }

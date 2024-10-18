@@ -328,7 +328,7 @@ class ResultPage extends StatelessWidget {
           return Stack(children: [
             Positioned.fill(
               child: SvgPicture.asset(
-                'assets/icons/background_4.svg',
+                'assets/icons/background_3.svg',
                 fit: BoxFit.cover, // Agar gambar menyesuaikan dengan layar
               ),
             ),
@@ -352,6 +352,8 @@ class ResultPage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange, // Warna latar tombol
                   foregroundColor: Colors.black, // Warna teks tombol
+                  elevation: 6, // Nilai elevasi untuk menambahkan bayangan
+                  shadowColor: Colors.black, // Warna bayangan (opsional)
                   padding: EdgeInsets.symmetric(
                       horizontal: 10, vertical: 0.5), // Ukuran padding
                   shape: RoundedRectangleBorder(
@@ -368,8 +370,8 @@ class ResultPage extends StatelessWidget {
             ),
             Positioned(
               bottom: parentHeight * 0.35,
-              left: parentWidth * 0.15,
-              right: parentWidth * 0.15,
+              left: parentWidth * 0.22,
+              right: parentWidth * 0.22,
               child: ElevatedButton(
                 onPressed: () {
                   // Tampilkan data collectedData sebelum dikirim ke Firebase
@@ -377,6 +379,8 @@ class ResultPage extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueAccent, // Warna tombol
+                  elevation: 6, // Nilai elevasi untuk menambahkan bayangan
+                  shadowColor: Colors.black, // Warna bayangan (opsional)
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40),
@@ -393,8 +397,8 @@ class ResultPage extends StatelessWidget {
             ),
             Positioned(
               bottom: parentHeight * 0.2,
-              left: parentWidth * 0.15,
-              right: parentWidth * 0.15,
+              left: parentWidth * 0.22,
+              right: parentWidth * 0.22,
               child: ElevatedButton(
                 onPressed: () {
                   SubmitAndUploadData(context);
@@ -404,6 +408,8 @@ class ResultPage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white, // Warna latar tombol
                   foregroundColor: Colors.black, // Warna teks tombol
+                  elevation: 6, // Nilai elevasi untuk menambahkan bayangan
+                  shadowColor: Colors.black, // Warna bayangan (opsional)
                   padding: EdgeInsets.symmetric(
                       horizontal: 20, vertical: 15), // Ukuran padding
                   shape: RoundedRectangleBorder(
@@ -422,13 +428,17 @@ class ResultPage extends StatelessWidget {
             ),
             Positioned(
               bottom: parentHeight * 0.13,
-              left: parentWidth * 0.15,
-              right: parentWidth * 0.15,
+              left: parentWidth * 0.22,
+              right: parentWidth * 0.22,
               child: ElevatedButton(
                 onPressed: () {
                   // Kembali ke halaman pertama
                   Navigator.pop(context);
                 },
+                style: ElevatedButton.styleFrom(
+                  elevation: 6, // Nilai elevasi untuk menambahkan bayangan
+                  shadowColor: Colors.black, // Warna bayangan (opsional)
+                ),
                 child: Text(
                   'KEMBALI',
                   style: TextStyle(
