@@ -1,5 +1,5 @@
-import 'package:fitness/pages/admin.dart';
-import 'package:fitness/pages/user.dart';
+import 'package:stressmonitoringapp/pages/admin.dart';
+import 'package:stressmonitoringapp/pages/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

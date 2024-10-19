@@ -1,5 +1,5 @@
-import 'package:fitness/pages/hrvpages_old.dart';
-import 'package:fitness/pages/quesioner_pages.dart';
+import 'package:stressmonitoringapp/pages/hrvpages_old.dart';
+import 'package:stressmonitoringapp/pages/quesioner_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -79,7 +79,8 @@ class _HomePageState extends State<HomePage> {
                     style: ElevatedButton.styleFrom(
                       // backgroundColor: Colors.white, // Warna latar tombol
                       shape: CircleBorder(), // Membuat tombol berbentuk bulat
-                      padding: EdgeInsets.all(5), // Ukuran padding untuk membuat tombol bulat
+                      padding: EdgeInsets.all(
+                          5), // Ukuran padding untuk membuat tombol bulat
                       elevation: 6, // Nilai elevasi untuk menambahkan bayangan
                       shadowColor: Colors.black, // Warna bayangan (opsional)
                     ),
@@ -130,7 +131,8 @@ class _HomePageState extends State<HomePage> {
                     style: ElevatedButton.styleFrom(
                       // backgroundColor: Colors.white, // Warna latar tombol
                       shape: CircleBorder(), // Membuat tombol berbentuk bulat
-                      padding: EdgeInsets.all(5), // Ukuran padding untuk membuat tombol bulat
+                      padding: EdgeInsets.all(
+                          5), // Ukuran padding untuk membuat tombol bulat
                       elevation: 6, // Nilai elevasi untuk menambahkan bayangan
                       shadowColor: Colors.black, // Warna bayangan (opsional)
                     ),
@@ -216,28 +218,27 @@ class _HomePageState extends State<HomePage> {
 
               // Tombol Back di atas background
               Positioned(
-              bottom: parentHeight * 0.1,
-              left: parentWidth * 0.22,
-              right: parentWidth * 0.22,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Kembali ke halaman pertama
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  elevation: 6, // Nilai elevasi untuk menambahkan bayangan
-                  shadowColor: Colors.black, // Warna bayangan (opsional)
-                  minimumSize: Size(100, 50)
+                bottom: parentHeight * 0.1,
+                left: parentWidth * 0.22,
+                right: parentWidth * 0.22,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Kembali ke halaman pertama
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                      elevation: 6, // Nilai elevasi untuk menambahkan bayangan
+                      shadowColor: Colors.black, // Warna bayangan (opsional)
+                      minimumSize: Size(100, 50)),
+                  child: Text(
+                    'KEMBALI',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: const Color.fromARGB(255, 0, 61, 111)),
+                  ),
                 ),
-                child: Text(
-                  'KEMBALI',
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(255, 0, 61, 111)),
-                ),
-              ),
-            )
+              )
             ],
           );
         }));

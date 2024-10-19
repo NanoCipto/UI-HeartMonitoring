@@ -57,7 +57,7 @@ class _AdminPageState extends State<AdminPage> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.orange,
       ));
     }
     // Menghapus Isi Teks
@@ -278,26 +278,19 @@ class _ReportPagesState extends State<ReportPages> {
     }
   }
 
-  // Fungsi untuk menampilkan data dalam UI
+  // Fungsi untuk menampilkan data dalam bentuk Card dengan Detail Navigation
   Widget buildDataWidget() {
     if (firebaseData.isEmpty) {
       return Text("No data found");
     }
 
-    // Membuat tabel dengan pengguliran horizontal untuk tampilan lebih rapi
-  return SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    child: DataTable(
-      columns: const [
-        DataColumn(label: Text('Nama')),      // Kolom Nama
-        DataColumn(label: Text('Divisi')),    // Kolom Divisi
-        DataColumn(label: Text('Hasil')),     // Kolom Hasil
-      ],
-      rows: firebaseData.entries.expand<DataRow>((dateEntry) {
+    // Membuat daftar Card untuk setiap entri data
+    return ListView(
+      children: firebaseData.entries.expand<Widget>((dateEntry) {
         final timeEntries = dateEntry.value as Map<String, dynamic>;
 
         // Iterasi di setiap entri waktu
-        return timeEntries.entries.map<DataRow>((timeEntry) {
+        return timeEntries.entries.map<Widget>((timeEntry) {
           final details = timeEntry.value as Map<String, dynamic>;
 
           // Mendapatkan hasil yang tidak termasuk 'Nama' dan 'Divisi'
@@ -306,15 +299,89 @@ class _ReportPagesState extends State<ReportPages> {
               .map((entry) => "${entry.key}: ${entry.value}")
               .join(', ');
 
-          return DataRow(cells: [
-            DataCell(Text(details['Nama'] ?? '-')),      // Kolom Nama
-            DataCell(Text(details['Divisi'] ?? '-')),    // Kolom Divisi
-            DataCell(Text(hasil)),                       // Kolom Hasil
-          ]);
-        }).toList(); // Konversi hasil menjadi List<DataRow>
-      }).toList(), // Mengubah Iterable<DataRow> menjadi List<DataRow>
-    ),
-  );
+          return GestureDetector(
+            onTap: () {
+              // Navigasi ke halaman DetailPage dengan membawa data Nama, Divisi, dan Hasil
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DetailPage(
+                    nama: details['Nama'] ?? '-',
+                    divisi: details['Divisi'] ?? '-',
+                    hasil: hasil,
+                  ),
+                ),
+              );
+            },
+            child: Card(
+              margin: const EdgeInsets.all(8.0),
+              elevation: 4.0, // menambahkan shadow pada card
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Meratakan isi card ke kiri
+                  children: [
+                    // Section Nama (rata kiri)
+                    Row(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start, // Rata kiri pada teks
+                      children: [
+                        Text(
+                          'Nama:',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 8), // Spasi antar teks
+                        Expanded(
+                          child: Text(details['Nama'] ?? '-'),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8), // Spasi antara section
+
+                    // Section Divisi (rata kiri)
+                    Row(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start, // Rata kiri pada teks
+                      children: [
+                        Text(
+                          'Divisi:',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 8), // Spasi antar teks
+                        Expanded(
+                          child: Text(details['Divisi'] ?? '-'),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8), // Spasi antara section
+
+                    // Section Detail (klik untuk melihat detail data)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Detail:',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 8), // Spasi antar teks
+                        Expanded(
+                          child: Text(
+                            'Klik untuk detail', // Menampilkan teks "Klik untuk detail"
+                            style: TextStyle(
+                                color: Colors.blue), // Warna biru untuk link
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }).toList();
+      }).toList(),
+    );
   }
 
   @override
@@ -322,11 +389,174 @@ class _ReportPagesState extends State<ReportPages> {
     super.initState();
     fetchData();
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 241, 3, 3),
+        title: Center(
+          child: Text(
+            'DATA HASIL',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        leading: Container(
+          margin: EdgeInsets.all(10), // Jarak tombol dari tepi
+          child: ElevatedButton(
+            onPressed: () {
+              // Navigator Pop untuk kembali ke menu sebelumnya
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xffF7F8F8), // Warna latar tombol
+              padding: EdgeInsets.all(10), // Padding di dalam tombol
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10), // Bentuk sudut bulat
+              ),
+            ),
+            child: SvgPicture.asset(
+              'assets/icons/Arrow - Left 2.svg', // Gambar ikon panah kiri
+              width: 24, // Lebar ikon
+              height: 24, // Tinggi ikon
+            ),
+          ),
+        ),
+        actions: [
+          Padding(
+            //Logo Quesioner
+            padding: const EdgeInsets.only(right: 8.0),
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: SvgPicture.asset(
+                'assets/icons/QUIZ.svg',
+              ),
+            ),
+          )
+        ],
+      ),
+      body: LayoutBuilder(builder: (context, constraints) {
+        // final parentWidth = constraints.maxWidth;
+        // final parentHeight = constraints.maxHeight;
+
+        return Stack(
+          children: [
+            // Background SVG yang responsif
+            Positioned.fill(
+              child: SvgPicture.asset(
+                'assets/icons/background_4.svg',
+                fit: BoxFit.cover, // Agar gambar menyesuaikan dengan layar
+              ),
+            ),
+            isLoading
+                ? Center(child: CircularProgressIndicator())
+                : Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child:
+                        buildDataWidget(), // Ini adalah widget utama yang Anda ingin tampilkan
+                  ),
+          ],
+        );
+      }),
+    );
+  }
+}
+
+// Halaman baru untuk menampilkan detail berdasarkan data yang dipilih
+class DetailPage extends StatelessWidget {
+  final String nama;
+  final String divisi;
+  final String hasil;
+
+  // Constructor untuk menerima parameter Nama, Divisi, dan Hasil
+  DetailPage({required this.nama, required this.divisi, required this.hasil});
+
+  // Fungsi untuk memisahkan hasil menjadi beberapa bagian
+  Widget buildResultDetail(String hasil) {
+    // Memisahkan hasil berdasarkan koma
+    List<String> resultParts = hasil.split(', ');
+
+    // Mendapatkan bagian Amo, BPM List, Modus, MxDMn, RR Interval, dan Stress Index
+    String amo = resultParts.firstWhere((part) => part.startsWith('Amo'),
+        orElse: () => 'Amo: -');
+    String bpmList = resultParts.firstWhere(
+        (part) => part.startsWith('BPM List'),
+        orElse: () => 'BPM List: -');
+    String modus = resultParts.firstWhere((part) => part.startsWith('Modus'),
+        orElse: () => 'Modus: -');
+    String mxDMn = resultParts.firstWhere((part) => part.startsWith('MxDMn'),
+        orElse: () => 'MxDMn: -');
+    String rrInterval = resultParts.firstWhere(
+        (part) => part.startsWith('RRInterval'),
+        orElse: () => 'RRInterval: -');
+    String stressIndex = resultParts.firstWhere(
+        (part) => part.startsWith('StresIndex'),
+        orElse: () => 'StressIndex: -');
+    String quesionerSkor = resultParts.firstWhere(
+        (part) => part.startsWith('Quesioner Skor'),
+        orElse: () => 'Quesioner Skor: -');
+    String stressCategory = resultParts.firstWhere(
+        (part) => part.startsWith('Stress Category'),
+        orElse: () => 'Stress Category: -');
+
+    // Menampilkan data dengan jarak antar elemen
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(amo, style: TextStyle(fontSize: 16)), // Amo tanpa bold
+        SizedBox(height: 8),
+        // Menampilkan BPM List secara penuh
+        Text(
+          bpmList,
+          style: TextStyle(fontSize: 16),
+          softWrap:
+              true, // Membuat teks bisa membungkus baris jika terlalu panjang
+        ),
+        SizedBox(height: 8),
+        Text(modus, style: TextStyle(fontSize: 16)),
+        SizedBox(height: 8),
+        Text(mxDMn, style: TextStyle(fontSize: 16)),
+        SizedBox(height: 8),
+        // Menampilkan RRInterval secara penuh
+        Text(
+          rrInterval,
+          style: TextStyle(fontSize: 16),
+          softWrap:
+              true, // Membuat teks bisa membungkus baris jika terlalu panjang
+        ),
+        SizedBox(height: 8),
+        Text(stressIndex, style: TextStyle(fontSize: 16)),
+
+        // Menampilkan Quesioner Skor
+        Text(quesionerSkor,
+            style: TextStyle(fontSize: 16)), // Menampilkan skor tanpa bold
+        SizedBox(height: 8),
+
+        // Menampilkan Stress Category
+        Text(stressCategory,
+            style: TextStyle(fontSize: 16)), // Menampilkan kategori tanpa bold
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 241, 3, 3),
+          title: Center(
+            child: Text(
+              'DETAIL HASIL',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           leading: Container(
             margin: EdgeInsets.all(10), // Jarak tombol dari tepi
             child: ElevatedButton(
@@ -348,59 +578,60 @@ class _ReportPagesState extends State<ReportPages> {
               ),
             ),
           ),
-        ),
-        body: LayoutBuilder(builder: (context, constraints) {
-          // final parentWidth = constraints.maxWidth;
-          final parentHeight = constraints.maxHeight;
-
-          return Stack(
-            children: [
-              // Background SVG yang responsif
-              Positioned.fill(
+          actions: [
+            Padding(
+              //Logo Quesioner
+              padding: const EdgeInsets.only(right: 8.0),
+              child: SizedBox(
+                width: 40,
+                height: 40,
                 child: SvgPicture.asset(
-                  'assets/icons/background_4.svg',
-                  fit: BoxFit.cover, // Agar gambar menyesuaikan dengan layar
+                  'assets/icons/QUIZ.svg',
                 ),
               ),
-              Positioned(
-                top: parentHeight * 0.03,
-                right: parentHeight * 0.2,
-                left: parentHeight * 0.2,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Aksi ketika tombol Back ditekan
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white, // Warna latar tombol
-                    foregroundColor: Colors.black, // Warna teks tombol
-                    elevation: 6, // Nilai elevasi untuk menambahkan bayangan
-                    shadowColor: Colors.black, // Warna bayangan (opsional)
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 12), // Ukuran padding
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          15), // Border persegi dengan sudut melengkung
-                    ),
+            )
+          ],
+        ),
+        body: Stack(
+          children: [
+            // Positioned.fill(
+            //   child: SvgPicture.asset(
+            //     'assets/icons/background_4.svg',
+            //     fit: BoxFit.cover, // Agar gambar menyesuaikan dengan layar
+            //   ),
+            // ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Tampilkan Nama
+                  Text(
+                    'Nama:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
-                  child: Text(
-                    'DATA HASIL',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: const Color.fromARGB(255, 0, 0, 0)),
-                  ),
-                ),
-              ),
-              isLoading
-              ? Center(child: CircularProgressIndicator())
-              : Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: buildDataWidget(), // Ini adalah widget utama yang Anda ingin tampilkan
-                ),
-            ],
-          );
-        }),
-        );
-  }
+                  Text(nama),
+                  SizedBox(height: 16),
 
+                  // Tampilkan Divisi
+                  Text(
+                    'Divisi:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  Text(divisi),
+                  SizedBox(height: 16),
+
+                  // Tampilkan Hasil dengan format yang lebih rapi
+                  Text(
+                    'Hasil:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  SizedBox(height: 8),
+                  buildResultDetail(hasil), // Fungsi yang memisahkan hasil
+                ],
+              ),
+            ),
+          ],
+        ));
+  }
 }

@@ -1,6 +1,6 @@
 // import 'dart:ffi';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fitness/core.dart';
+import 'package:stressmonitoringapp/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 // import 'package:excel/excel.dart';

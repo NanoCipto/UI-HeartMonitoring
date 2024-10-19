@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.fitness">
+    package="com.example.stressmonitoringapp">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
@@ -24,7 +24,7 @@
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
     
     <application
-        android:label="fitness"
+        android:label="stressmonitoringapp"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -84,7 +84,8 @@
          In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
     <queries>
         <intent>
-            <action android:name="android.bluetooth.adapter.action.REQUEST_ENABLE" />
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
         </intent>
     </queries>
 </manifest>
