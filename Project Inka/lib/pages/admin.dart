@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:firebase_database/firebase_database.dart';
+// import 'package:firebase_database/firebase_database.dart';
+import 'dart:convert'; // Untuk jsonEncode dan jsonDecode
+import 'package:http/http.dart' as http;
+// import 'package:intl/intl.dart'; // untuk DateFormat
 
 class AdminPage extends StatefulWidget {
   const AdminPage({super.key});
@@ -241,8 +244,84 @@ class ReportPages extends StatefulWidget {
 }
 
 class _ReportPagesState extends State<ReportPages> {
-  final DatabaseReference databaseReference = FirebaseDatabase.instance.ref().child('data');
+  Map<String, dynamic> firebaseData = {};
+  bool isLoading = true;
 
+  // Fungsi untuk mengambil data dari Firebase
+  Future<void> fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    // DateTime waktuaktual = DateTime.now();
+    String url =
+        "https://heartratemonitoring-c0e5d-default-rtdb.firebaseio.com/data.json"; // Mengambil semua data di bawah "data"
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        setState(() {
+          firebaseData = jsonDecode(response.body);
+          isLoading = false;
+        });
+      } else {
+        print("Failed to load data. Status code: ${response.statusCode}");
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  // Fungsi untuk menampilkan data dalam UI
+  Widget buildDataWidget() {
+    if (firebaseData.isEmpty) {
+      return Text("No data found");
+    }
+
+    // Membuat tabel dengan pengguliran horizontal untuk tampilan lebih rapi
+  return SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: DataTable(
+      columns: const [
+        DataColumn(label: Text('Nama')),      // Kolom Nama
+        DataColumn(label: Text('Divisi')),    // Kolom Divisi
+        DataColumn(label: Text('Hasil')),     // Kolom Hasil
+      ],
+      rows: firebaseData.entries.expand<DataRow>((dateEntry) {
+        final timeEntries = dateEntry.value as Map<String, dynamic>;
+
+        // Iterasi di setiap entri waktu
+        return timeEntries.entries.map<DataRow>((timeEntry) {
+          final details = timeEntry.value as Map<String, dynamic>;
+
+          // Mendapatkan hasil yang tidak termasuk 'Nama' dan 'Divisi'
+          final hasil = details.entries
+              .where((entry) => entry.key != 'Nama' && entry.key != 'Divisi')
+              .map((entry) => "${entry.key}: ${entry.value}")
+              .join(', ');
+
+          return DataRow(cells: [
+            DataCell(Text(details['Nama'] ?? '-')),      // Kolom Nama
+            DataCell(Text(details['Divisi'] ?? '-')),    // Kolom Divisi
+            DataCell(Text(hasil)),                       // Kolom Hasil
+          ]);
+        }).toList(); // Konversi hasil menjadi List<DataRow>
+      }).toList(), // Mengubah Iterable<DataRow> menjadi List<DataRow>
+    ),
+  );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -312,64 +391,15 @@ class _ReportPagesState extends State<ReportPages> {
                   ),
                 ),
               ),
-              Center(
-                child: StreamBuilder(
-                  stream: databaseReference.onValue,
-                  builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
-                    if (snapshot.hasData && !snapshot.hasError) {
-                      DataSnapshot? dataSnapshot = snapshot.data!.snapshot;
-                      if (dataSnapshot.value != null) {
-                        Map<dynamic, dynamic> data =
-                            dataSnapshot.value as Map<dynamic, dynamic>;
-
-                        // Extract data based on your structure
-                        List<Map<String, dynamic>> tableData = [];
-                        data.forEach((dateKey, timeData) {
-                          timeData.forEach((timeKey, values) {
-                            tableData.add(Map<String, dynamic>.from(values));
-                          });
-                        });
-
-                        return SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            columns: const [
-                              DataColumn(label: Text('Nama')),
-                              DataColumn(label: Text('Divisi')),
-                              DataColumn(label: Text('Amo')),
-                              DataColumn(label: Text('Modus')),
-                              DataColumn(label: Text('MxDMn')),
-                              DataColumn(label: Text('Stress Index')),
-                              DataColumn(label: Text('Stress Category')),
-                            ],
-                            rows: tableData.map((rowData) {
-                              return DataRow(cells: [
-                                DataCell(Text(rowData['Nama'] ?? '')),
-                                DataCell(Text(rowData['Divisi'] ?? '')),
-                                DataCell(Text(rowData['Amo'] ?? '')),
-                                DataCell(Text(rowData['Modus'] ?? '')),
-                                DataCell(Text(rowData['MxDMn'] ?? '')),
-                                DataCell(Text(rowData['StresIndex'] ?? '')),
-                                DataCell(Text(rowData['Stress Category'] ?? '')),
-                              ]);
-                            }).toList(),
-                          ),
-                        );
-                      } else {
-                        return Center(child: Text('No data available.'));
-                      }
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  },
+              isLoading
+              ? Center(child: CircularProgressIndicator())
+              : Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: buildDataWidget(), // Ini adalah widget utama yang Anda ingin tampilkan
                 ),
-              )
             ],
           );
         }),
-        
         );
   }
 
